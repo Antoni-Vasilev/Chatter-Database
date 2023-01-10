@@ -1,8 +1,12 @@
 package com.chatter.database.controller;
 
 import com.chatter.database.converter.UserConverter;
+import com.chatter.database.dto.User.UserLoginInDto;
+import com.chatter.database.dto.User.UserLoginOutDto;
 import com.chatter.database.dto.User.UserRegisterInDto;
 import com.chatter.database.dto.User.UserRegisterOutDto;
+import com.chatter.database.exception.DuplicateRecordException;
+import com.chatter.database.exception.NotFoundRecordException;
 import com.chatter.database.model.User;
 import com.chatter.database.service.UserService;
 import jakarta.validation.Valid;
@@ -55,5 +59,16 @@ public class UserController {
         User savedUser = userService.save(user);
 
         return ResponseEntity.ok(userConverter.User_UserRegisterOutDto(savedUser));
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<UserLoginOutDto> login(@RequestBody @Valid UserLoginInDto userLoginInDto) {
+        User findUser = userService.findByEmail(userLoginInDto.getEmail());
+        if (findUser == null) throw new NotFoundRecordException("User is not found");
+
+        if (!findUser.getPassword().equals(userLoginInDto.getPassword()))
+            throw new DuplicateRecordException("Email or password is incorrect");
+
+        return ResponseEntity.ok(userConverter.User_UserLoginOutDto(findUser));
     }
 }

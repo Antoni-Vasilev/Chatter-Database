@@ -38,4 +38,9 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorMessage> handleUserEmailDuplicated(DuplicateRecordException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ErrorMessage(e.getMessage()));
     }
+
+    @ExceptionHandler({NotFoundRecordException.class})
+    public ResponseEntity<ErrorMessage> handleUserEmailNotFound(DuplicateRecordException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ErrorMessage(e.getMessage()));
+    }
 }

@@ -1,5 +1,6 @@
 package com.chatter.database.converter;
 
+import com.chatter.database.dto.User.UserLoginOutDto;
 import com.chatter.database.dto.User.UserRegisterInDto;
 import com.chatter.database.dto.User.UserRegisterOutDto;
 import com.chatter.database.model.User;
@@ -22,6 +23,17 @@ public class UserConverter {
 
     public UserRegisterOutDto User_UserRegisterOutDto(User user) {
         return UserRegisterOutDto.builder()
+                .fullName(user.getFullName())
+                .displayName(user.getDisplayName())
+                .displayNameCode(user.getDisplayNameCode())
+                .phone(user.getPhone())
+                .country(user.getCountry())
+                .email(user.getEmail())
+                .build();
+    }
+
+    public UserLoginOutDto User_UserLoginOutDto(User user) {
+        return UserLoginOutDto.builder()
                 .fullName(user.getFullName())
                 .displayName(user.getDisplayName())
                 .displayNameCode(user.getDisplayNameCode())
