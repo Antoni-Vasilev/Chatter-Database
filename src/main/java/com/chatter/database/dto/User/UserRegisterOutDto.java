@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -15,6 +17,7 @@ public class UserRegisterOutDto {
     private String displayName;
     private String displayNameCode;
     private String phone;
+    private Date birthdayDate;
     private String country;
     private String email;
 }

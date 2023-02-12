@@ -9,6 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -44,6 +46,10 @@ public class User {
     @NotNull
     @Column(nullable = false)
     private String country;
+
+    @NotNull
+    @Column(nullable = false)
+    private Date birthdayDate;
 
     @Email
     @NotNull
