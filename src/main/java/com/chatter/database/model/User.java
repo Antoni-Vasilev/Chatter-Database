@@ -51,6 +51,8 @@ public class User {
     @Column(nullable = false)
     private Date birthdayDate;
 
+    private Date lastOpen;
+
     @Email
     @NotNull
     @Column(unique = true, nullable = false)

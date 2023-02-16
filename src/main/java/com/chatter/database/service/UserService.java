@@ -14,4 +14,6 @@ public interface UserService {
     User findByEmail(String email);
 
     void uploadProfileImage(MultipartFile file);
+
+    List<User> findAllUsers();
 }

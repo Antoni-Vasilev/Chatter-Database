@@ -1,4 +1,4 @@
-package com.chatter.database.dto.User;
+package com.chatter.database.dto.user;
 
 import jakarta.persistence.Column;
 import jakarta.validation.constraints.Email;

@@ -41,4 +41,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public void uploadProfileImage(MultipartFile file) {
     }
+
+    @Override
+    public List<User> findAllUsers() {
+        return userRepository.findAll();
+    }
 }

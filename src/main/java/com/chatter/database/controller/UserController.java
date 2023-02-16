@@ -1,17 +1,24 @@
 package com.chatter.database.controller;
 
 import com.chatter.database.converter.UserConverter;
-import com.chatter.database.dto.User.*;
+import com.chatter.database.dto.user.*;
 import com.chatter.database.exception.DuplicateRecordException;
 import com.chatter.database.exception.NotFoundRecordException;
+import com.chatter.database.model.Friend;
 import com.chatter.database.model.User;
+import com.chatter.database.service.FriendService;
 import com.chatter.database.service.UserService;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,11 +33,13 @@ public class UserController {
 
     private final UserService userService;
     private final UserConverter userConverter;
+    private final FriendService friendService;
 
     @Autowired
-    public UserController(UserService userService, UserConverter userConverter) {
+    public UserController(UserService userService, UserConverter userConverter, FriendService friendService) {
         this.userService = userService;
         this.userConverter = userConverter;
+        this.friendService = friendService;
     }
 
     @PostMapping("/register")
@@ -75,6 +84,23 @@ public class UserController {
         return ResponseEntity.ok(true);
     }
 
+    @RequestMapping("/getProfileImage/{email}")
+    @ResponseBody
+    public HttpEntity<byte[]> getProfileImage(@PathVariable String email) {
+        File file = new File("files/profileImages", email + ".gif");
+        try {
+            byte[] imageBytes = Files.readAllBytes(file.toPath());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.IMAGE_GIF);
+            headers.setContentLength(imageBytes.length);
+
+            return new HttpEntity<>(imageBytes, headers);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     @PostMapping("/login")
     public ResponseEntity<UserLoginOutDto> login(@RequestBody @Valid UserLoginInDto userLoginInDto) {
         User findUser = userService.findByEmail(userLoginInDto.getEmail());
@@ -107,5 +133,27 @@ public class UserController {
             throw new DuplicateRecordException("Email or password is incorrect");
 
         return ResponseEntity.ok(userConverter.User_UserLoginOutDto(findUser));
+    }
+
+    @GetMapping("/allUser")
+    public ResponseEntity<List<UserInfoDto>> allUsers(@RequestParam(name = "search") String search, @RequestParam(name = "email") String email) {
+        User findUser = userService.findByEmail(email);
+        List<Friend> friends = friendService.friends(findUser.getId());
+
+        List<User> allUsers = userService.findAllUsers();
+        List<UserInfoDto> userInfoDtoList =
+                new java.util.ArrayList<>(allUsers.stream()
+                        .map(userConverter::UserToUserInfoDto)
+                        .filter(item -> item.getEmail().toLowerCase().contains(search.toLowerCase())
+                                || (item.getDisplayName() + item.getDisplayNameCode()).toLowerCase().contains(search.toLowerCase())
+                                || item.getFullName().toLowerCase().contains(search.toLowerCase()))
+                        .filter(item -> !item.getEmail().equals(email))
+                        .toList());
+
+        for (Friend item : friends) {
+            userInfoDtoList.removeIf(e -> e.getId().equals(item.getFirstUser().getId()) || e.getId().equals(item.getSecondUser().getId()));
+        }
+
+        return ResponseEntity.ok(userInfoDtoList);
     }
 }

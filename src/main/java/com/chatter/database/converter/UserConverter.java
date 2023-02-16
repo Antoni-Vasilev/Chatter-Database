@@ -1,8 +1,9 @@
 package com.chatter.database.converter;
 
-import com.chatter.database.dto.User.UserLoginOutDto;
-import com.chatter.database.dto.User.UserRegisterInDto;
-import com.chatter.database.dto.User.UserRegisterOutDto;
+import com.chatter.database.dto.user.UserInfoDto;
+import com.chatter.database.dto.user.UserLoginOutDto;
+import com.chatter.database.dto.user.UserRegisterInDto;
+import com.chatter.database.dto.user.UserRegisterOutDto;
 import com.chatter.database.model.User;
 import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
@@ -71,6 +72,17 @@ public class UserConverter {
                 .country(user.getCountry())
                 .birthdayDate(user.getBirthdayDate())
                 .email(user.getEmail())
+                .build();
+    }
+
+    public UserInfoDto UserToUserInfoDto(User user) {
+        return UserInfoDto.builder()
+                .id(user.getId())
+                .fullName(user.getFullName())
+                .displayName(user.getDisplayName())
+                .displayNameCode(user.getDisplayNameCode())
+                .email(user.getEmail())
+                .lastOpen(user.getLastOpen())
                 .build();
     }
 }
