@@ -5,8 +5,6 @@ import com.chatter.database.repository.MessageRepository;
 import com.chatter.database.service.MessageService;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-
 @Service
 public class MessageServiceImpl implements MessageService {
 

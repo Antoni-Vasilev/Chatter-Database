@@ -1,7 +1,5 @@
 package com.chatter.database.server;
 
-import com.chatter.database.DatabaseApplication;
-
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
@@ -17,7 +15,7 @@ public class RealtimeMessages implements Runnable {
     @Override
     public void run() {
         for (int i = 10000; i < 60000; i++) {
-            boolean isError = false;
+            boolean isError;
             try {
                 ServerSocket server = new ServerSocket(i);
                 System.out.println("Server (Messages) port is: " + i);

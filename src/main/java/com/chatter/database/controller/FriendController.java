@@ -4,11 +4,9 @@ import com.chatter.database.converter.FriendConverter;
 import com.chatter.database.dto.friend.FriendUserInfo;
 import com.chatter.database.model.Chat;
 import com.chatter.database.model.Friend;
-import com.chatter.database.model.Message;
 import com.chatter.database.model.User;
 import com.chatter.database.service.ChatService;
 import com.chatter.database.service.FriendService;
-import com.chatter.database.service.MessageService;
 import com.chatter.database.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,16 +23,14 @@ public class FriendController {
     private final FriendConverter friendConverter;
     private final ChatController chatController;
     private final ChatService chatService;
-    private final MessageService messageService;
 
     @Autowired
-    public FriendController(FriendService friendService, UserService userService, FriendConverter friendConverter, ChatController chatController, ChatService chatService, MessageService messageService) {
+    public FriendController(FriendService friendService, UserService userService, FriendConverter friendConverter, ChatController chatController, ChatService chatService) {
         this.friendService = friendService;
         this.userService = userService;
         this.friendConverter = friendConverter;
         this.chatController = chatController;
         this.chatService = chatService;
-        this.messageService = messageService;
     }
 
     @PostMapping("/getAllByEmail")

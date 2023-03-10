@@ -1,7 +1,5 @@
 package com.chatter.database.server;
 
-import com.chatter.database.DatabaseApplication;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,12 +11,12 @@ import java.util.List;
 
 public class RealtimeChats implements Runnable {
 
-    private static List<Client> clients = new ArrayList<>();
+    private static final List<Client> clients = new ArrayList<>();
 
     @Override
     public void run() {
         for (int i = 10000; i < 60000; i++) {
-            boolean isError = false;
+            boolean isError;
             try {
                 ServerSocket server = new ServerSocket(i);
                 System.out.println("Server (Chats) port is: " + i);
