@@ -10,6 +10,8 @@ public interface FriendRequestService {
 
     void deleteRequest(long fromID, long toID);
 
+    void deleteRequestById(long id);
+
     boolean checkByIDs(long fromID, long toID);
 
     List<FriendRequest> all(String email);

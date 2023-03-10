@@ -28,4 +28,14 @@ public class FriendServiceImpl implements FriendService {
     public List<Friend> friends(long UserID) {
         return friendRepository.findAllByFirstUser_IdOrSecondUser_Id(UserID, UserID);
     }
+
+    @Override
+    public Friend findByFirstUserAndSecondUser(User firstUser, User secondUser) {
+        return friendRepository.findByFirstUserAndSecondUserOrSecondUserAndFirstUser(firstUser, secondUser, firstUser, secondUser);
+    }
+
+    @Override
+    public void delete(Friend friend) {
+        friendRepository.delete(friend);
+    }
 }

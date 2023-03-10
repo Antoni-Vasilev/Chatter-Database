@@ -6,7 +6,6 @@ import com.chatter.database.repository.UserRepository;
 import com.chatter.database.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -34,12 +33,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByEmail(String email) {
-        return userRepository.findUserByEmail(email);
+    public void update(User user) {
+        userRepository.save(user);
     }
 
     @Override
-    public void uploadProfileImage(MultipartFile file) {
+    public User findByEmail(String email) {
+        return userRepository.findUserByEmail(email);
     }
 
     @Override

@@ -17,6 +17,5 @@ public class UserInfoDto {
     private String displayName;
     private String displayNameCode;
     private String email;
-
     private Date lastOpen;
 }

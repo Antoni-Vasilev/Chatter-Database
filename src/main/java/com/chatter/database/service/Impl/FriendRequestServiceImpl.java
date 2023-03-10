@@ -29,6 +29,11 @@ public class FriendRequestServiceImpl implements FriendRequestService {
     }
 
     @Override
+    public void deleteRequestById(long id) {
+        friendRequestRepository.deleteById(id);
+    }
+
+    @Override
     public boolean checkByIDs(long fromID, long toID) {
         return friendRequestRepository.findByFrom_IdAndTo_Id(fromID, toID) == null;
     }

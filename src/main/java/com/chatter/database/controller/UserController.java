@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -50,7 +51,7 @@ public class UserController {
         if (!users.isEmpty()) {
             boolean isFinished = false;
             for (int i = 1; i < 10000; i++) {
-                String code = new String(new char[]{'0', '0', '0', '0'}, 0, 4 - String.valueOf(i).toString().length()) + i;
+                String code = new String(new char[]{'0', '0', '0', '0'}, 0, 4 - String.valueOf(i).length()) + i;
 
                 if (isFinished) break;
 
@@ -117,10 +118,10 @@ public class UserController {
             // Get the hash's bytes
             byte[] bytes = md.digest();
 
-            // This bytes[] has bytes in decimal format. Convert it to hexadecimal format
+            // These bytes[] has bytes in decimal format. Convert it to hexadecimal format
             StringBuilder sb = new StringBuilder();
-            for (int i = 0; i < bytes.length; i++) {
-                sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
+            for (byte aByte : bytes) {
+                sb.append(Integer.toString((aByte & 0xff) + 0x100, 16).substring(1));
             }
 
             // Get complete hashed password in hex format
@@ -155,5 +156,26 @@ public class UserController {
         }
 
         return ResponseEntity.ok(userInfoDtoList);
+    }
+
+    @PostMapping("/lastOpen")
+    public ResponseEntity<Boolean> lastOpen(@RequestParam(name = "email") String email) {
+        User findUser = userService.findByEmail(email);
+        User user = User.builder()
+                .id(findUser.getId())
+                .fullName(findUser.getFullName())
+                .displayName(findUser.getDisplayName())
+                .displayNameCode(findUser.getDisplayNameCode())
+                .phone(findUser.getPhone())
+                .country(findUser.getCountry())
+                .birthdayDate(findUser.getBirthdayDate())
+                .lastOpen(new Date())
+                .email(findUser.getEmail())
+                .password(findUser.getPassword())
+                .build();
+
+        userService.update(user);
+
+        return ResponseEntity.ok(true);
     }
 }

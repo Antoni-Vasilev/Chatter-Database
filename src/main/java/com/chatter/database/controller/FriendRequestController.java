@@ -2,9 +2,7 @@ package com.chatter.database.controller;
 
 import com.chatter.database.converter.FriendConverter;
 import com.chatter.database.converter.FriendRequestConverter;
-import com.chatter.database.dto.friendRequest.FriendRequestAll;
-import com.chatter.database.dto.friendRequest.FriendRequestRegisterInDto;
-import com.chatter.database.dto.friendRequest.FriendRequestRegisterOutDto;
+import com.chatter.database.dto.friendRequest.*;
 import com.chatter.database.exception.DuplicateRecordException;
 import com.chatter.database.model.Friend;
 import com.chatter.database.model.FriendRequest;
@@ -57,17 +55,17 @@ public class FriendRequestController {
     }
 
     @PostMapping("/checkRequest")
-    public ResponseEntity<Boolean> checkRequest(@RequestBody FriendRequestRegisterInDto friendRequestRegisterInDto) {
-        User from = userService.findByEmail(friendRequestRegisterInDto.getFromEmail());
-        User to = userService.findByEmail(friendRequestRegisterInDto.getToEmail());
+    public ResponseEntity<Boolean> checkRequest(@RequestBody FriendRequestCheck friendRequestCheck) {
+        User from = userService.findByEmail(friendRequestCheck.getFromEmail());
+        User to = userService.findByEmail(friendRequestCheck.getToEmail());
 
         return ResponseEntity.ok(friendRequestService.checkByIDs(from.getId(), to.getId()));
     }
 
     @PostMapping("/acceptRequest")
-    public ResponseEntity<Boolean> acceptRequest(@RequestBody FriendRequestRegisterInDto friendRequestRegisterInDto) {
-        User from = userService.findByEmail(friendRequestRegisterInDto.getFromEmail());
-        User to = userService.findByEmail(friendRequestRegisterInDto.getToEmail());
+    public ResponseEntity<Boolean> acceptRequest(@RequestBody FriendRequestAccept friendRequestAccept) {
+        User from = userService.findByEmail(friendRequestAccept.getFromEmail());
+        User to = userService.findByEmail(friendRequestAccept.getToEmail());
 
         friendRequestService.deleteRequest(from.getId(), to.getId());
 
@@ -77,12 +75,19 @@ public class FriendRequestController {
         return ResponseEntity.ok(true);
     }
 
+    @PostMapping("/rejectRequest")
+    public ResponseEntity<Boolean> rejectRequest(@RequestParam(name = "requestId") Long id) {
+        friendRequestService.deleteRequestById(id);
+
+        return ResponseEntity.ok(true);
+    }
+
     @GetMapping("/all")
     public ResponseEntity<List<FriendRequestAll>> all(@RequestParam(name = "search") String search, @RequestParam(name = "email") String email) {
         List<FriendRequest> friendRequests = friendRequestService.all(email);
-        friendRequests.stream().filter(item -> item.getFrom().getEmail().contains(search)
+        friendRequests = friendRequests.stream().filter(item -> item.getFrom().getEmail().contains(search)
                 || (item.getFrom().getDisplayName() + item.getFrom().getDisplayNameCode()).contains(search)
-                || item.getFrom().getFullName().contains(search));
+                || item.getFrom().getFullName().contains(search)).toList();
 
         List<FriendRequestAll> friendRequestAll = friendRequests.stream().map(friendRequestConverter::FriendRequestToFriendRequestAll).toList();
 
